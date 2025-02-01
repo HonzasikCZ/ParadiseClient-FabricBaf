@@ -50,27 +50,19 @@ public abstract class InGameHudMixin {
 
         ArrayList<String> text = new ArrayList<>();
 
-        
         text.add(Formatting.DARK_BLUE + Constants.WINDOW_TITLE);
-
-        
-        String serverText = Formatting.WHITE + "Server" + Formatting.GRAY + ": " + Formatting.AQUA +
-                ((!Objects.isNull(this.client.getCurrentServerEntry()) && ParadiseClient_Fabric.hudMod.showServerIP) ? this.client.getCurrentServerEntry().address : "Hidden");
-        text.add(serverText);
-
-        
+        text.add(Formatting.WHITE + "Server" + Formatting.GRAY + ": " + Formatting.AQUA +
+                ((!Objects.isNull(this.client.getCurrentServerEntry()) && ParadiseClient_Fabric.hudMod.showServerIP) ? this.client.getCurrentServerEntry().address : "Hidden"));
         assert this.client.player != null;
-        text.add(Formatting.AQUA + "Engine " + (Objects.isNull(this.client.player.networkHandler) ? "" : this.client.player.networkHandler.getBrand()));
-        text.add(Formatting.AQUA + "FPS " + this.client.getCurrentFps());
-        text.add(Formatting.AQUA + "Players: " + this.client.player.networkHandler.getPlayerList().size());
+        text.add(Formatting.WHITE + "Engine" + Formatting.GRAY + ": " + Formatting.AQUA + (Objects.isNull(this.client.player.networkHandler) ? "" : this.client.player.networkHandler.getBrand()));
+        text.add(Formatting.WHITE + "FPS" + Formatting.GRAY + ": " + Formatting.AQUA + this.client.getCurrentFps());
+        text.add(Formatting.WHITE + "Players" + Formatting.GRAY + ": " + Formatting.AQUA + this.client.player.networkHandler.getPlayerList().size());
 
-        
         int padding = 10;
         int x = padding;
         int y = padding;
         int maxWidth = 0;
 
-        
         for (String s : text) {
             int width = this.client.textRenderer.getWidth(s);
             if (width > maxWidth) {
@@ -78,13 +70,25 @@ public abstract class InGameHudMixin {
             }
         }
 
-        
         int windowHeight = text.size() * this.client.textRenderer.fontHeight + padding * 2;
         int borderThickness = 2;
-        context.fill(x - padding, y - padding, x + maxWidth + padding, y + windowHeight, 0x80000000); 
-        context.drawBorder(x - padding, y - padding, maxWidth + padding * 2, windowHeight, 0xFF404040, borderThickness);
+        int borderColor = 0xFF404040;
 
-        
+        // Vykreslení pozadí
+        context.fill(x - padding, y - padding, x + maxWidth + padding, y + windowHeight, 0x80000000);
+
+        // Vykreslení ohraničení (tlustší pomocí více čar)
+        for (int i = 0; i < borderThickness; i++) {
+            // Horní čára
+            context.fill(x - padding + i, y - padding + i, x + maxWidth + padding - i, y - padding + i + 1, borderColor);
+            // Dolní čára
+            context.fill(x - padding + i, y + windowHeight - i - 1, x + maxWidth + padding - i, y + windowHeight - i, borderColor);
+            // Levá čára
+            context.fill(x - padding + i, y - padding + i, x - padding + i + 1, y + windowHeight - i, borderColor);
+            // Pravá čára
+            context.fill(x + maxWidth + padding - i - 1, y - padding + i, x + maxWidth + padding - i, y + windowHeight - i, borderColor);
+        }
+
         for (String s : text) {
             context.drawText(this.client.textRenderer, s, x, y, 0xFFFFFF, false);
             y += this.client.textRenderer.fontHeight;
