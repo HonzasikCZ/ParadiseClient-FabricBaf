@@ -91,7 +91,6 @@ public class ParadiseClient_Fabric implements ModInitializer {
         bungeeSpoofMod = new BungeeSpoofMod();
         miscMod = new MiscMod();
         hudMod = new HudMod();
-        chatRoomMod = new ChatRoomMod();
         exploitMod = new ExploitMod();
         networkMod = new NetworkMod();
     }
