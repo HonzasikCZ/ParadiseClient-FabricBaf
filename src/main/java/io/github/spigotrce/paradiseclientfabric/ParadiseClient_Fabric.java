@@ -50,10 +50,6 @@ public class ParadiseClient_Fabric implements ModInitializer {
      */
     public static HudMod hudMod;
     /**
-     * The instance of {@link ChatRoomMod}, which handles chat room functionalities.
-     */
-    public static ChatRoomMod chatRoomMod;
-    /**
      * The instance of {@link ExploitMod}, which handles various exploit-related functionalities.
      */
     public static ExploitMod exploitMod;

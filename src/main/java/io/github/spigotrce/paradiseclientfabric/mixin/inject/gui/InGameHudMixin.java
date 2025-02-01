@@ -11,6 +11,8 @@ import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardDisplaySlot;
 import net.minecraft.scoreboard.ScoreboardObjective;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,19 +27,9 @@ import java.util.Objects;
 
 import static io.github.spigotrce.paradiseclientfabric.Helper.getChroma;
 
-/**
- * Mixin for the InGameHud class to inject custom HUD rendering behavior.
- * This mixin is used to display additional information on the HUD.
- *
- * @author SpigotRCE
- * @since 1.0
- */
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin {
 
-    /**
-     * The Minecraft client instance.
-     */
     @Final
     @Shadow
     private MinecraftClient client;
@@ -45,31 +37,13 @@ public abstract class InGameHudMixin {
     @Final
     private PlayerListHud playerListHud;
 
-    /**
-     * Gets the TextRenderer instance used for rendering text.
-     *
-     * @return The TextRenderer instance.
-     */
     @Shadow
     public abstract TextRenderer getTextRenderer();
 
-    /**
-     * Injects behavior at the end of the InGameHud constructor.
-     *
-     * @param client The Minecraft client instance.
-     * @param ci     Callback information for the method.
-     */
     @Inject(method = "<init>", at = @At("TAIL"))
     public void init(MinecraftClient client, CallbackInfo ci) {
     }
 
-    /**
-     * Injects behavior at the end of the render method to add custom HUD information.
-     *
-     * @param context     The DrawContext used for rendering.
-     * @param tickCounter The RenderTickCounter for frame timing.
-     * @param ci          Callback information for the method.
-     */
     @Inject(method = "render", at = @At("TAIL"))
     public void renderMainHud(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         if (this.client == null) {
@@ -78,29 +52,46 @@ public abstract class InGameHudMixin {
 
         ArrayList<String> text = new ArrayList<>();
 
-        text.add(Constants.WINDOW_TITLE);
-        text.add("Server " + ((!Objects.isNull(this.client.getCurrentServerEntry()) && ParadiseClient_Fabric.hudMod.showServerIP) ? this.client.getCurrentServerEntry().address : "Hidden"));
-        assert this.client.player != null;
-        text.add("Engine " + (Objects.isNull(this.client.player.networkHandler) ? "" : this.client.player.networkHandler.getBrand()));
-        text.add("FPS " + this.client.getCurrentFps());
-        text.add("Players: " + this.client.player.networkHandler.getPlayerList().size());
+        
+        text.add(Formatting.DARK_BLUE + Constants.WINDOW_TITLE);
 
-        int i = 0;
+        
+        String serverText = "Server" + Formatting.GRAY + ": " + Formatting.AQUA +
+                ((!Objects.isNull(this.client.getCurrentServerEntry()) && ParadiseClient_Fabric.hudMod.showServerIP) ? this.client.getCurrentServerEntry().address : "Hidden");
+        text.add(serverText);
+
+        
+        assert this.client.player != null;
+        text.add(Formatting.AQUA + "Engine " + (Objects.isNull(this.client.player.networkHandler) ? "" : this.client.player.networkHandler.getBrand()));
+        text.add(Formatting.AQUA + "FPS " + this.client.getCurrentFps());
+        text.add(Formatting.AQUA + "Players: " + this.client.player.networkHandler.getPlayerList().size());
+
+        
+        int padding = 5;
+        int x = 5;
+        int y = 5;
+        int maxWidth = 0;
+
+        
         for (String s : text) {
-            renderTextWithChroma(context, s, 5, 5 + this.client.textRenderer.fontHeight * i);
-            i++;
+            int width = this.client.textRenderer.getWidth(s);
+            if (width > maxWidth) {
+                maxWidth = width;
+            }
+        }
+
+       
+        int windowHeight = text.size() * this.client.textRenderer.fontHeight + padding * 2;
+        context.fill(x - padding, y - padding, x + maxWidth + padding, y + windowHeight, 0x80000000);
+        context.drawBorder(x - padding, y - padding, maxWidth + padding * 2, windowHeight, 0xFF404040);
+
+        
+        for (String s : text) {
+            renderTextWithChroma(context, s, x, y);
+            y += this.client.textRenderer.fontHeight;
         }
     }
 
-    /**
-     * Renders text with a chroma color effect.
-     *
-     * @param ct The DrawContext used for rendering.
-     * @param s  The string to render.
-     * @param x  The x-coordinate for the text.
-     * @param y  The y-coordinate for the text.
-     */
-    @SuppressWarnings("SameParameterValue")
     @Unique
     private void renderTextWithChroma(DrawContext ct, String s, int x, int y) {
         char[] chars = s.toCharArray();

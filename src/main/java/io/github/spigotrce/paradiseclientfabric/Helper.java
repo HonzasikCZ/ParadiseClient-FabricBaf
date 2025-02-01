@@ -67,7 +67,7 @@ public class Helper {
     }
 
     public static String appendPrefix(String text) {
-        return "&aParadise&bClient &r" + text;
+        return "&#22F339&lParadise&#3FB1F3&lClient &8&l//&r+ text;
     }
 
     /**
@@ -151,32 +151,42 @@ public class Helper {
      * @param code The color code string (e.g., "&0", "&1").
      * @return The corresponding {@link Formatting} value.
      */
-    private static Formatting getColorFromCode(String code) {
-        return switch (code) {
-            case "&0" -> Formatting.BLACK;
-            case "&1" -> Formatting.DARK_BLUE;
-            case "&2" -> Formatting.DARK_GREEN;
-            case "&3" -> Formatting.DARK_AQUA;
-            case "&4" -> Formatting.DARK_RED;
-            case "&5" -> Formatting.DARK_PURPLE;
-            case "&6" -> Formatting.GOLD;
-            case "&7" -> Formatting.GRAY;
-            case "&8" -> Formatting.DARK_GRAY;
-            case "&9" -> Formatting.BLUE;
-            case "&a" -> Formatting.GREEN;
-            case "&b" -> Formatting.AQUA;
-            case "&c" -> Formatting.RED;
-            case "&d" -> Formatting.LIGHT_PURPLE;
-            case "&e" -> Formatting.YELLOW;
-            case "&f" -> Formatting.WHITE;
-            case "&k" -> Formatting.OBFUSCATED;
-            case "&l" -> Formatting.BOLD;
-            case "&m" -> Formatting.STRIKETHROUGH;
-            case "&n" -> Formatting.UNDERLINE;
-            case "&o" -> Formatting.ITALIC;
-            default -> Formatting.RESET;
-        };
+private static Formatting getColorFromCode(String code) {
+    if (code.startsWith("&#") && code.length() == 8) {
+        try {
+            String hex = code.substring(2);
+            int color = Integer.parseInt(hex, 16);
+            return Formatting.ofColor(color);
+        } catch (NumberFormatException e) {
+            return Formatting.RESET;
+        }
     }
+
+    return switch (code) {
+        case "&0" -> Formatting.BLACK;
+        case "&1" -> Formatting.DARK_BLUE;
+        case "&2" -> Formatting.DARK_GREEN;
+        case "&3" -> Formatting.DARK_AQUA;
+        case "&4" -> Formatting.DARK_RED;
+        case "&5" -> Formatting.DARK_PURPLE;
+        case "&6" -> Formatting.GOLD;
+        case "&7" -> Formatting.GRAY;
+        case "&8" -> Formatting.DARK_GRAY;
+        case "&9" -> Formatting.BLUE;
+        case "&a" -> Formatting.GREEN;
+        case "&b" -> Formatting.AQUA;
+        case "&c" -> Formatting.RED;
+        case "&d" -> Formatting.LIGHT_PURPLE;
+        case "&e" -> Formatting.YELLOW;
+        case "&f" -> Formatting.WHITE;
+        case "&k" -> Formatting.OBFUSCATED;
+        case "&l" -> Formatting.BOLD;
+        case "&m" -> Formatting.STRIKETHROUGH;
+        case "&n" -> Formatting.UNDERLINE;
+        case "&o" -> Formatting.ITALIC;
+        default -> Formatting.RESET;
+    };
+}
 
     /**
      * Capitalizes the first letter of a string.
