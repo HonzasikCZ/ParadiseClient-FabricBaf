@@ -2,7 +2,6 @@ package io.github.spigotrce.paradiseclientfabric.mixin.inject.minecraft;
 
 import io.github.spigotrce.paradiseclientfabric.Constants;
 import io.github.spigotrce.paradiseclientfabric.ParadiseClient_Fabric;
-import io.github.spigotrce.paradiseclientfabric.discord.RPC;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import org.spongepowered.asm.mixin.Mixin;
@@ -41,33 +40,6 @@ public class MinecraftClientMixin {
             cancellable = true)
     private void getClientTitle(CallbackInfoReturnable<String> callback) {
         callback.setReturnValue(Constants.WINDOW_TITLE);
-    }
-
-    /**
-     * Injects code at the start of the close method to perform additional cleanup.
-     * <p>
-     * This method shuts down the chat room client when the Minecraft client is closed.
-     * </p>
-     *
-     * @param ci Callback information.
-     */
-    @Inject(method = "close", at = @At(value = "HEAD"))
-    private void closeHead(CallbackInfo ci) {
-        ParadiseClient_Fabric.chatRoomMod.client.shutdown();
-    }
-
-    /**
-     * Injects code after the initialization of the MinecraftClient.
-     * <p>
-     * This method starts a new thread for the Discord RPC (Rich Presence Client).
-     * </p>
-     *
-     * @param info Callback information.
-     */
-
-    @Inject(method = "<init>", at = @At("RETURN"))
-    private void onInit(CallbackInfo info) {
-        new Thread(new RPC()).start();
     }
 
     /**
