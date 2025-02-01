@@ -67,7 +67,7 @@ public class Helper {
     }
 
     public static String appendPrefix(String text) {
-        return "&#22F339&lParadise&#3FB1F3&lClient &8&l//&r+ text;
+        return "&#22F339&lParadise&#3FB1F3&lClient &8&l//&r" + text;
     }
 
     /**
