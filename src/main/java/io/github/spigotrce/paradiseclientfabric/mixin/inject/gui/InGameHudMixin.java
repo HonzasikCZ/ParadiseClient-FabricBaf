@@ -50,7 +50,8 @@ public abstract class InGameHudMixin {
 
         ArrayList<String> text = new ArrayList<>();
 
-        text.add(Formatting.DARK_BLUE + Constants.WINDOW_TITLE);
+        // Změna: Tmavě modrá nahrazena modrou
+        text.add(Formatting.BLUE + Constants.WINDOW_TITLE);
         text.add(Formatting.WHITE + "Server" + Formatting.GRAY + ": " + Formatting.AQUA +
                 ((!Objects.isNull(this.client.getCurrentServerEntry()) && ParadiseClient_Fabric.hudMod.showServerIP) ? this.client.getCurrentServerEntry().address : "Hidden"));
         assert this.client.player != null;
@@ -58,9 +59,10 @@ public abstract class InGameHudMixin {
         text.add(Formatting.WHITE + "FPS" + Formatting.GRAY + ": " + Formatting.AQUA + this.client.getCurrentFps());
         text.add(Formatting.WHITE + "Players" + Formatting.GRAY + ": " + Formatting.AQUA + this.client.player.networkHandler.getPlayerList().size());
 
-        int padding = 10;
+        // Zvýšení odsazení od rohu
+        int padding = 20; // Zvýšeno z 10 na 20
         int x = padding;
-        int y = padding;
+        int y = padding + 10; // Posunuto více dolů
         int maxWidth = 0;
 
         for (String s : text) {

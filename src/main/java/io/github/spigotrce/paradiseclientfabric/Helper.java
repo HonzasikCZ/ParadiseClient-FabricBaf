@@ -74,9 +74,9 @@ public class Helper {
         for (String part : parts) {
             if (part.isEmpty()) continue;
             if (part.startsWith("&")) {
-                if (part.startsWith("&#") && part.length() == 8) {
+                if (part.startsWith("&#") && part.length() >= 8) {
                     // Hex barva
-                    String hex = part.substring(2);
+                    String hex = part.substring(2, 8);
                     try {
                         int color = Integer.parseInt(hex, 16);
                         TextColor textColor = TextColor.fromRgb(color);
