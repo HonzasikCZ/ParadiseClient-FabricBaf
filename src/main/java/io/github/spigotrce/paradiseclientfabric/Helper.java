@@ -45,7 +45,7 @@ public class Helper {
     }
 
     public static String appendPrefix(String text) {
-        return "&#22F339&lParadise&#3FB1F3&lClient &8&l//&r" + text;
+        return "&#22F339&lParadise&#3FB1F3&lClient &8&l//&r " + text;
     }
 
     @SuppressWarnings("unused")
@@ -74,17 +74,35 @@ public class Helper {
         for (String part : parts) {
             if (part.isEmpty()) continue;
             if (part.startsWith("&")) {
-                Formatting format = getColorFromCode(part.substring(0, 2));
-                if (format != null) {
-                    currentFormats.add(format);
-                }
-                String remaining = part.substring(2);
-                if (!remaining.isEmpty()) {
-                    MutableText formattedText = Text.literal(remaining);
-                    for (Formatting fmt : currentFormats) {
-                        formattedText = formattedText.formatted(fmt);
+                if (part.startsWith("&#") && part.length() == 8) {
+                    // Hex barva
+                    String hex = part.substring(2);
+                    try {
+                        int color = Integer.parseInt(hex, 16);
+                        TextColor textColor = TextColor.fromRgb(color);
+                        MutableText coloredText = Text.literal(part.substring(8)).styled(style -> style.withColor(textColor));
+                        for (Formatting fmt : currentFormats) {
+                            coloredText = coloredText.formatted(fmt);
+                        }
+                        text.append(coloredText);
+                    } catch (NumberFormatException e) {
+                        // Neplatná hex barva, ignorujeme
+                        text.append(Text.literal(part.substring(8)));
                     }
-                    text.append(formattedText);
+                } else {
+                    // Formátování (např. &a, &b, &c)
+                    Formatting format = getColorFromCode(part.substring(0, 2));
+                    if (format != null) {
+                        currentFormats.add(format);
+                    }
+                    String remaining = part.substring(2);
+                    if (!remaining.isEmpty()) {
+                        MutableText formattedText = Text.literal(remaining);
+                        for (Formatting fmt : currentFormats) {
+                            formattedText = formattedText.formatted(fmt);
+                        }
+                        text.append(formattedText);
+                    }
                 }
             } else {
                 MutableText unformattedText = Text.literal(part);
@@ -103,16 +121,6 @@ public class Helper {
     }
 
     private static Formatting getColorFromCode(String code) {
-        if (code.startsWith("&#") && code.length() == 8) {
-            try {
-                String hex = code.substring(2);
-                int color = Integer.parseInt(hex, 16);
-                return Formatting.byName(hex);
-            } catch (NumberFormatException e) {
-                return Formatting.RESET;
-            }
-        }
-
         return switch (code) {
             case "&0" -> Formatting.BLACK;
             case "&1" -> Formatting.DARK_BLUE;

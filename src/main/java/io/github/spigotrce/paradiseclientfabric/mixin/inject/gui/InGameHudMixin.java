@@ -25,8 +25,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static io.github.spigotrce.paradiseclientfabric.Helper.getChroma;
-
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin {
 
@@ -56,7 +54,7 @@ public abstract class InGameHudMixin {
         text.add(Formatting.DARK_BLUE + Constants.WINDOW_TITLE);
 
         
-        String serverText = "Server" + Formatting.GRAY + ": " + Formatting.AQUA +
+        String serverText = Formatting.WHITE + "Server" + Formatting.GRAY + ": " + Formatting.AQUA +
                 ((!Objects.isNull(this.client.getCurrentServerEntry()) && ParadiseClient_Fabric.hudMod.showServerIP) ? this.client.getCurrentServerEntry().address : "Hidden");
         text.add(serverText);
 
@@ -67,9 +65,9 @@ public abstract class InGameHudMixin {
         text.add(Formatting.AQUA + "Players: " + this.client.player.networkHandler.getPlayerList().size());
 
         
-        int padding = 5;
-        int x = 5;
-        int y = 5;
+        int padding = 10;
+        int x = padding;
+        int y = padding;
         int maxWidth = 0;
 
         
@@ -80,26 +78,16 @@ public abstract class InGameHudMixin {
             }
         }
 
-       
+        
         int windowHeight = text.size() * this.client.textRenderer.fontHeight + padding * 2;
-        context.fill(x - padding, y - padding, x + maxWidth + padding, y + windowHeight, 0x80000000);
-        context.drawBorder(x - padding, y - padding, maxWidth + padding * 2, windowHeight, 0xFF404040);
+        int borderThickness = 2;
+        context.fill(x - padding, y - padding, x + maxWidth + padding, y + windowHeight, 0x80000000); 
+        context.drawBorder(x - padding, y - padding, maxWidth + padding * 2, windowHeight, 0xFF404040, borderThickness);
 
         
         for (String s : text) {
-            renderTextWithChroma(context, s, x, y);
+            context.drawText(this.client.textRenderer, s, x, y, 0xFFFFFF, false);
             y += this.client.textRenderer.fontHeight;
-        }
-    }
-
-    @Unique
-    private void renderTextWithChroma(DrawContext ct, String s, int x, int y) {
-        char[] chars = s.toCharArray();
-        int i = 0;
-        for (char aChar : chars) {
-            String c = String.valueOf(aChar);
-            ct.drawText(this.client.textRenderer, c, x + i, y, getChroma(((int) Math.sqrt(x * x + y * y) * 10) + (i * -17), 1, 1).getRGB(), false);
-            i += getTextRenderer().getWidth(c);
         }
     }
 
