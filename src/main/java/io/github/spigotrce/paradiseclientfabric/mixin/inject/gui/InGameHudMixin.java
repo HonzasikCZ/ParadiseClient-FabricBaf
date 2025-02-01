@@ -50,7 +50,6 @@ public abstract class InGameHudMixin {
 
         ArrayList<String> text = new ArrayList<>();
 
-        // Změna: Tmavě modrá nahrazena modrou
         text.add(Formatting.BLUE + Constants.WINDOW_TITLE);
         text.add(Formatting.WHITE + "Server" + Formatting.GRAY + ": " + Formatting.AQUA +
                 ((!Objects.isNull(this.client.getCurrentServerEntry()) && ParadiseClient_Fabric.hudMod.showServerIP) ? this.client.getCurrentServerEntry().address : "Hidden"));
@@ -59,10 +58,9 @@ public abstract class InGameHudMixin {
         text.add(Formatting.WHITE + "FPS" + Formatting.GRAY + ": " + Formatting.AQUA + this.client.getCurrentFps());
         text.add(Formatting.WHITE + "Players" + Formatting.GRAY + ": " + Formatting.AQUA + this.client.player.networkHandler.getPlayerList().size());
 
-        // Zvýšení odsazení od rohu
-        int padding = 20; // Zvýšeno z 10 na 20
+        int padding = 17;
         int x = padding;
-        int y = padding + 10; // Posunuto více dolů
+        int y = padding;
         int maxWidth = 0;
 
         for (String s : text) {
@@ -76,18 +74,12 @@ public abstract class InGameHudMixin {
         int borderThickness = 2;
         int borderColor = 0xFF404040;
 
-        // Vykreslení pozadí
         context.fill(x - padding, y - padding, x + maxWidth + padding, y + windowHeight, 0x80000000);
 
-        // Vykreslení ohraničení (tlustší pomocí více čar)
         for (int i = 0; i < borderThickness; i++) {
-            // Horní čára
             context.fill(x - padding + i, y - padding + i, x + maxWidth + padding - i, y - padding + i + 1, borderColor);
-            // Dolní čára
             context.fill(x - padding + i, y + windowHeight - i - 1, x + maxWidth + padding - i, y + windowHeight - i, borderColor);
-            // Levá čára
             context.fill(x - padding + i, y - padding + i, x - padding + i + 1, y + windowHeight - i, borderColor);
-            // Pravá čára
             context.fill(x + maxWidth + padding - i - 1, y - padding + i, x + maxWidth + padding - i, y + windowHeight - i, borderColor);
         }
 
