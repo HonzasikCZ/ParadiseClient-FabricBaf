@@ -67,12 +67,12 @@ public class WallPaper {
         }
 
         // Draw the gradient background
-        context.fillGradient(0, 0, width, height, 0x801A237E, 0x80882dbd);
+        context.fillGradient(0, 0, width, height, 0x80002F6E, 0x80006EB8);
 
         // Update and draw each particle
         for (Particle particle : particles) {
             particle.update(width, height);
-            context.fill(particle.x, particle.y, particle.x + 2, particle.y + 2, 0x80FFFFFF);
+            context.fill(particle.x, particle.y, particle.x + 2, particle.y + 2, 0x8000BFFF);
         }
     }
 
