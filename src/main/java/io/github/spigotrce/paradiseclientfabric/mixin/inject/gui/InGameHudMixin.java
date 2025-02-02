@@ -74,17 +74,17 @@ public abstract class InGameHudMixin {
         int borderThickness = 2;
         int borderColor = 0xFF404040;
 
-        context.fill(x - padding, y - padding, x + maxWidth + padding, y + windowHeight + padding, 0x80000000);
+        context.fill(x, y, x + maxWidth + padding * 2, y + windowHeight + padding, 0x80000000);
 
         for (int i = 0; i < borderThickness; i++) {
-            context.fill(x - padding + i, y - padding + i, x + maxWidth + padding - i, y - padding + i + 1, borderColor);
-            context.fill(x - padding + i, y + windowHeight + padding - i - 1, x + maxWidth + padding - i, y + windowHeight + padding - i, borderColor);
-            context.fill(x - padding + i, y - padding + i, x - padding + i + 1, y + windowHeight + padding - i, borderColor);
-            context.fill(x + maxWidth + padding - i - 1, y - padding + i, x + maxWidth + padding - i, y + windowHeight + padding - i, borderColor);
+            context.fill(x + i, y + i, x + maxWidth + padding * 2 - i, y + i + 1, borderColor);
+            context.fill(x + i, y + windowHeight + padding - i - 1, x + maxWidth + padding * 2 - i, y + windowHeight + padding - i, borderColor);
+            context.fill(x + i, y + i, x + i + 1, y + windowHeight + padding - i, borderColor);
+            context.fill(x + maxWidth + padding * 2 - i - 1, y + i, x + maxWidth + padding * 2 - i, y + windowHeight + padding - i, borderColor);
         }
 
         for (String s : text) {
-            context.drawText(this.client.textRenderer, s, x, y, 0xFFFFFF, false);
+            context.drawText(this.client.textRenderer, s, x + padding, y + padding / 2, 0xFFFFFF, false);
             y += this.client.textRenderer.fontHeight;
         }
     }
