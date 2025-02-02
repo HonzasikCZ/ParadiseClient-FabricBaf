@@ -45,7 +45,7 @@ public class Helper {
     }
 
     public static String appendPrefix(String text) {
-        return "&#22F339&lParadise&#3FB1F3&lClient &8&l//&r " + text;
+        return "&a&lP&b&lClient &8&l//&r " + text;
     }
 
     @SuppressWarnings("unused")
@@ -74,40 +74,19 @@ public class Helper {
         for (String part : parts) {
             if (part.isEmpty()) continue;
             if (part.startsWith("&")) {
-                if (part.startsWith("&#") && part.length() >= 8) {
-                    // Hex barva
-                    String hex = part.substring(2, 8);
-                    try {
-                        int color = Integer.parseInt(hex, 16);
-                        TextColor textColor = TextColor.fromRgb(color);
-                        MutableText coloredText = Text.literal(part.substring(8)).styled(style -> style.withColor(textColor));
-                        for (Formatting fmt : currentFormats) {
-                            coloredText = coloredText.formatted(fmt);
-                        }
-                        text.append(coloredText);
-                    } catch (NumberFormatException e) {
-                        // Neplatná hex barva, ignorujeme
-                        text.append(Text.literal(part.substring(8)));
+                currentFormats.add(getColorFromCode(part.substring(0, 2)));
+                String remaining = part.substring(2);
+                if (!remaining.isEmpty()) {
+                    MutableText formattedText = Text.literal(remaining);
+                    for (Formatting format : currentFormats) {
+                        formattedText = formattedText.formatted(format);
                     }
-                } else {
-                    // Formátování (např. &a, &b, &c)
-                    Formatting format = getColorFromCode(part.substring(0, 2));
-                    if (format != null) {
-                        currentFormats.add(format);
-                    }
-                    String remaining = part.substring(2);
-                    if (!remaining.isEmpty()) {
-                        MutableText formattedText = Text.literal(remaining);
-                        for (Formatting fmt : currentFormats) {
-                            formattedText = formattedText.formatted(fmt);
-                        }
-                        text.append(formattedText);
-                    }
+                    text.append(formattedText);
                 }
             } else {
                 MutableText unformattedText = Text.literal(part);
-                for (Formatting fmt : currentFormats) {
-                    unformattedText = unformattedText.formatted(fmt);
+                for (Formatting format : currentFormats) {
+                    unformattedText = unformattedText.formatted(format);
                 }
                 text.append(unformattedText);
             }
@@ -120,6 +99,12 @@ public class Helper {
         return text;
     }
 
+    /**
+     * Converts a color code string to a {@link Formatting} enum value.
+     *
+     * @param code The color code string (e.g., "&0", "&1").
+     * @return The corresponding {@link Formatting} value.
+     */
     private static Formatting getColorFromCode(String code) {
         return switch (code) {
             case "&0" -> Formatting.BLACK;
