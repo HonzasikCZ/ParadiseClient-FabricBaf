@@ -45,7 +45,7 @@ public class Helper {
     }
 
     public static String appendPrefix(String text) {
-        return "&a&lP&b&lClient &8&l//&r " + text;
+        return "&9&lP&b&lClient &8&l//&r " + text;
     }
 
     @SuppressWarnings("unused")
