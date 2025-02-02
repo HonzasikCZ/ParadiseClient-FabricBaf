@@ -58,7 +58,7 @@ public abstract class InGameHudMixin {
         text.add(Formatting.WHITE + "FPS" + Formatting.GRAY + ": " + Formatting.AQUA + this.client.getCurrentFps());
         text.add(Formatting.WHITE + "Players" + Formatting.GRAY + ": " + Formatting.AQUA + this.client.player.networkHandler.getPlayerList().size());
 
-        int padding = 17;
+        int padding = 10;
         int x = padding;
         int y = padding;
         int maxWidth = 0;
@@ -70,17 +70,17 @@ public abstract class InGameHudMixin {
             }
         }
 
-        int windowHeight = text.size() * this.client.textRenderer.fontHeight + padding * 2;
+        int windowHeight = text.size() * this.client.textRenderer.fontHeight;
         int borderThickness = 2;
         int borderColor = 0xFF404040;
 
-        context.fill(x - padding, y - padding, x + maxWidth + padding, y + windowHeight, 0x80000000);
+        context.fill(x - padding, y - padding, x + maxWidth + padding, y + windowHeight + padding, 0x80000000);
 
         for (int i = 0; i < borderThickness; i++) {
             context.fill(x - padding + i, y - padding + i, x + maxWidth + padding - i, y - padding + i + 1, borderColor);
-            context.fill(x - padding + i, y + windowHeight - i - 1, x + maxWidth + padding - i, y + windowHeight - i, borderColor);
-            context.fill(x - padding + i, y - padding + i, x - padding + i + 1, y + windowHeight - i, borderColor);
-            context.fill(x + maxWidth + padding - i - 1, y - padding + i, x + maxWidth + padding - i, y + windowHeight - i, borderColor);
+            context.fill(x - padding + i, y + windowHeight + padding - i - 1, x + maxWidth + padding - i, y + windowHeight + padding - i, borderColor);
+            context.fill(x - padding + i, y - padding + i, x - padding + i + 1, y + windowHeight + padding - i, borderColor);
+            context.fill(x + maxWidth + padding - i - 1, y - padding + i, x + maxWidth + padding - i, y + windowHeight + padding - i, borderColor);
         }
 
         for (String s : text) {
