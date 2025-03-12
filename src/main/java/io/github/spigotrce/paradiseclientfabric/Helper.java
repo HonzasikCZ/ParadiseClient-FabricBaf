@@ -2,6 +2,7 @@ package io.github.spigotrce.paradiseclientfabric;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.MinecraftClient;
@@ -24,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 /**
  * Utility class providing various helper methods for Minecraft client operations.
@@ -209,10 +212,11 @@ public class Helper {
 
     public static String getLatestReleaseTag() throws IOException {
         HttpURLConnection connection = (HttpURLConnection) new URL(
-                "https://api.github.com/repos/SpigotRCE/ParadiseClient-Fabric/releases/latest"
+                "http://paradise-client.xyz/api/versions"
         ).openConnection();
-        connection.setRequestProperty("Accept", "application/vnd.github.v3+json");
+        connection.setRequestProperty("Accept", "application/json");
         connection.setRequestMethod("GET");
+
         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             StringBuilder response = new StringBuilder();
@@ -221,7 +225,8 @@ public class Helper {
                 response.append(line);
             reader.close();
 
-            return JsonParser.parseString(response.toString()).getAsJsonObject().get("tag_name").getAsString();
+            JsonObject responseObject = JsonParser.parseString(response.toString()).getAsJsonObject();
+            return responseObject.getAsJsonObject("latest_version").get("version").getAsString();
         } else {
             return null;
         }
@@ -254,6 +259,10 @@ public class Helper {
             }
         }
         throw new Exception("Failed to fetch UUID");
+    }
+
+    public static void runAsync(Runnable runnable) {
+        new Thread(runnable).start();
     }
 
     @SuppressWarnings("unused")
